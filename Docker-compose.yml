@@ -1,0 +1,35 @@
+version: '3'
+services:
+  #Postgres db container
+  db:
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: pass
+      POSTAGRES_USER: user
+      POSTGRES_DB: test_app
+    ports:
+      - '5432:5432'
+
+  #Adminer container
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - 8080:8080
+
+  #Node app container
+  node_app:
+    build: .
+    ports:
+      - '3000:3000'
+    depends_on:
+      - db
+    environment:
+      DATABASE_URL: postgres://user:pass@postgres:5432/db
+      NODE_ENV: development
+      PORT: 3000
+    volumes:
+      - .:/app/
+      - /app/node_modules
+    command: npm run dev
