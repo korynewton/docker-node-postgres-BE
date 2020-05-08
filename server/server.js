@@ -3,9 +3,10 @@ const helmet = require('helmet');
 const morgan = require('morgan');
 
 const app = express();
+const api = require('./api/router.js');
 
 // request logging
-app.use(morgan('short'));
+app.use(morgan('combined'));
 // JSON parsing middleware
 app.use(express.json());
 // header setting middleware
@@ -16,9 +17,10 @@ app.get('/health', (req, res) =>
   res.status(200).json({ message: 'sanity check passed' })
 );
 
-// app.use(api);
+app.use(api);
 
 let server;
+
 module.exports = {
   start(port) {
     server = app.listen(port, () => {
